@@ -16,13 +16,17 @@ use Getopt::Long::Descriptive;
 
 my ($opt, $usage) = describe_options(
   'enphase-metrics %o',
-  [ 'envoy=s',  "the enphase envoy ip", { required => 1  } ],
-  [ 'ip=s',     "the ip to listen on - default localhost", { default => "127.0.0.1"  } ],
-  [ 'port=s',   "the port to connect to -default 8080",   { default  => "8080" } ],
+  [ 'envoy=s',  "the enphase envoy ip", { default => $ENV{ENVOY_ENVOY}  } ],
+  [ 'ip=s',     "the ip to listen on - default localhost", { default => $ENV{ENVOY_IP} // "127.0.0.1"  } ],
+  [ 'port=s',   "the port to connect to -default 8080",   { default  => $ENV{ENVOY_PORT} // "8080" } ],
   [ 'help|h',     "print usage message and exit", { shortcircuit => 1 } ],
 );
  
 print($usage->text), exit if $opt->help;
+
+# Can't use 'required => 1' in options while there is a default
+# Therefore have to check it manually if it isn't set via an arg or environment variable
+print($usage->text), die "must set --envoy ip" unless $opt->envoy;
 
 my $envoy = $opt->envoy;
 my $listen_ip = $opt->ip;
