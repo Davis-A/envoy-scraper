@@ -17,8 +17,9 @@ use Getopt::Long::Descriptive;
 my ($opt, $usage) = describe_options(
   'enphase-metrics %o',
   [ 'envoy=s',  "the enphase envoy ip", { default => $ENV{ENVOY_ENVOY}  } ],
-  [ 'ip=s',     "the ip to listen on - default localhost", { default => $ENV{ENVOY_IP} // "127.0.0.1"  } ],
+  [ 'ip=s',     "the ip to listen on - default localhost", { default => $ENV{ENVOY_IP} // "0.0.0.0"  } ],
   [ 'port=s',   "the port to connect to -default 8080",   { default  => $ENV{ENVOY_PORT} // "8080" } ],
+  [ 'verbose|v', "verbose output", ],
   [ 'help|h',     "print usage message and exit", { shortcircuit => 1 } ],
 );
  
@@ -31,6 +32,11 @@ print($usage->text), die "must set --envoy ip" unless $opt->envoy;
 my $envoy = $opt->envoy;
 my $listen_ip = $opt->ip;
 my $listen_port = $opt->port;
+
+say "setting up:";
+say "\t envoy ip:    $envoy";
+say "\t listen ip:   $listen_ip";
+say "\t listen port: $listen_port";
 
 # setup prom object
 my $prom = Prometheus::Tiny->new;
@@ -47,6 +53,7 @@ my $timer = IO::Async::Timer::Periodic->new(
   on_tick => sub {
     $prom->clear;
     fill_metrics($prom);
+    say "scraped metrics:\n" . $prom->format if $opt->verbose;
   },
 );
 
@@ -90,4 +97,5 @@ sub fill_metrics($prom) {
   }
   $prom->set("power_production", $production, { error => $error });
   $prom->set("power_consumption", $consumption, { error => $error });
+
 }
