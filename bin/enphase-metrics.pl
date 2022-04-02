@@ -19,7 +19,7 @@ my ($opt, $usage) = describe_options(
   [ 'envoy=s',  "the enphase envoy ip", { default => $ENV{ENVOY_ENVOY}  } ],
   [ 'ip=s',     "the ip to listen on - default localhost", { default => $ENV{ENVOY_IP} // "0.0.0.0"  } ],
   [ 'port=s',   "the port to connect to -default 8080",   { default  => $ENV{ENVOY_PORT} // "8080" } ],
-  [ 'verbose|v', "verbose output", ],
+  [ 'log',      "log metrics to stdout" ],
   [ 'help|h',     "print usage message and exit", { shortcircuit => 1 } ],
 );
  
@@ -53,7 +53,7 @@ my $timer = IO::Async::Timer::Periodic->new(
   on_tick => sub {
     $prom->clear;
     fill_metrics($prom);
-    say "scraped metrics:\n" . $prom->format if $opt->verbose;
+    say "scraped metrics:\n" . $prom->format if $opt->log;
   },
 );
 
