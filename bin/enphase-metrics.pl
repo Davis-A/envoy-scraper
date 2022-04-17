@@ -17,8 +17,8 @@ use Getopt::Long::Descriptive;
 my ($opt, $usage) = describe_options(
   'enphase-metrics %o',
   [ 'envoy=s',  "the enphase envoy ip", { default => $ENV{ENVOY_ENVOY}  } ],
-  [ 'ip=s',     "the ip to listen on - default localhost", { default => $ENV{ENVOY_IP} // "0.0.0.0"  } ],
-  [ 'port=s',   "the port to connect to -default 8080",   { default  => $ENV{ENVOY_PORT} // "8080" } ],
+  [ 'ip=s',     "the ip to listen on - default 0.0.0.0", { default => $ENV{ENVOY_IP} // "0.0.0.0"  } ],
+  [ 'port=s',   "the port to connect to - default 8080",   { default  => $ENV{ENVOY_PORT} // "8080" } ],
   [ 'log',      "log metrics to stdout", { default => $ENV{ENVOY_LOG} } ],
   [ 'help|h',     "print usage message and exit", { shortcircuit => 1 } ],
 );
