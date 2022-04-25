@@ -90,7 +90,7 @@ sub fill_metrics($prom) {
   
   if ($response->{success}) {
     my $data = decode_json($response->{content});
-    $production = $data->{production}[1]{wNow};
+    $production = $data->{production}[1]{wNow} > 0 ? $data->{production}[1]{wNow} : 0;
     $consumption = $data->{consumption}[0]{wNow};
   } else {
     $error = 1;
